@@ -1,313 +1,151 @@
-<?php
-
-include 'components/connect.php';
-
-session_start();
-
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
-   header('location:login.php');
-};
-
-if(isset($_POST['submit'])){
-
-   $name = $_POST['name'];
-   $name = filter_var($name, FILTER_SANITIZE_STRING);
-
-   $email = $_POST['email'];
-   $email = filter_var($email, FILTER_SANITIZE_STRING);
-   
-   if(!empty($name)){
-      $update_name = $conn->prepare("UPDATE `users` SET name = ? WHERE id = ?");
-      $update_name->execute([$name, $user_id]);
-   }
-
-   if(!empty($email)){
-      $select_email = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
-      $select_email->execute([$email]);
-      if($select_email->rowCount() > 0){
-         $message[] = 'email already taken!';
-      }else{
-         $update_email = $conn->prepare("UPDATE `users` SET email = ? WHERE id = ?");
-         $update_email->execute([$email, $user_id]);
-      }
-   }
-
-   $empty_pass = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';
-   $select_prev_pass = $conn->prepare("SELECT password FROM `users` WHERE id = ?");
-   $select_prev_pass->execute([$user_id]);
-   $fetch_prev_pass = $select_prev_pass->fetch(PDO::FETCH_ASSOC);
-   $prev_pass = $fetch_prev_pass['password'];
-   $old_pass = sha1($_POST['old_pass']);
-   $old_pass = filter_var($old_pass, FILTER_SANITIZE_STRING);
-   $new_pass = sha1($_POST['new_pass']);
-   $new_pass = filter_var($new_pass, FILTER_SANITIZE_STRING);
-   $confirm_pass = sha1($_POST['confirm_pass']);
-   $confirm_pass = filter_var($confirm_pass, FILTER_SANITIZE_STRING);
-
-   if($old_pass != $empty_pass){
-      if($old_pass != $prev_pass){
-         $message[] = 'old password not matched!';
-      }elseif($new_pass != $confirm_pass){
-         $message[] = 'confirm password not matched!';
-      }else{
-         if($new_pass != $empty_pass){
-            $update_pass = $conn->prepare("UPDATE `users` SET password = ? WHERE id = ?");
-            $update_pass->execute([$confirm_pass, $user_id]);
-            $message[] = 'password updated successfully!';
-         }else{
-            $message[] = 'please enter a new password!';
-         }
-      }
-   }  
-
-}
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPDATE PROFILE - YouthStory</title>
-    <style>html {
-        height: 100%;
-      }
-      body {
-        margin:0;
-        padding:0;
-        font-family: sans-serif;
-        background: linear-gradient(#141e30, #243b55);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .login-box {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 400px;
-        padding: 40px;
-        transform: translate(-50%, -50%);
-        background: rgba(0,0,0,.5);
-        box-sizing: border-box;
-        box-shadow: 0 15px 25px rgba(0,0,0,.6);
-        border-radius: 10px;
-      }
-      
-      .login-box h2 {
-        margin: 0 0 30px;
-        padding: 0;
-        color: #fff;
-        text-align: center;
-      }
-      
-      .login-box .user-box {
-        position: relative;
-      }
-      
-      .login-box .user-box input {
-        width: 100%;
-        padding: 10px 0;
-        font-size: 16px;
-        color: #fff;
-        margin-bottom: 30px;
-        border: none;
-        border-bottom: 1px solid #fff;
-        outline: none;
-        background: transparent;
-      }
-      .login-box .user-box label {
-        position: absolute;
-        top:0;
-        left: 0;
-        padding: 10px 0;
-        font-size: 16px;
-        color: #fff;
-        pointer-events: none;
-        transition: .5s;
-      }
-      
-      .login-box .user-box input:focus ~ label,
-      .login-box .user-box input:valid ~ label {
-        top: -20px;
-        left: 0;
-        color: #03e9f4;
-        font-size: 12px;
-      }
-      
-      .login-box form a {
-        position: relative;
-        display: inline-block;
-        padding: 10px 20px;
-        color: #03e9f4;
-        font-size: 16px;
-        text-decoration: none;
-        text-transform: uppercase;
-        overflow: hidden;
-        transition: .5s;
-        margin-top: 40px;
-        letter-spacing: 4px
-      }
-      
-      .login-box a:hover {
-        background: #03e9f4;
-        color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 0 5px #03e9f4,
-                    0 0 25px #03e9f4,
-                    0 0 50px #03e9f4,
-                    0 0 100px #03e9f4;
-      }
-      
-      .login-box a span {
-        position: absolute;
-        display: block;
-      }
-      
-      .login-box a span:nth-child(1) {
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #03e9f4);
-        animation: btn-anim1 1s linear infinite;
-      }
-      
-      @keyframes btn-anim1 {
-        0% {
-          left: -100%;
-        }
-        50%,100% {
-          left: 100%;
-        }
-      }
-      
-      .login-box a span:nth-child(2) {
-        top: -100%;
-        right: 0;
-        width: 2px;
-        height: 100%;
-        background: linear-gradient(180deg, transparent, #03e9f4);
-        animation: btn-anim2 1s linear infinite;
-        animation-delay: .25s
-      }
-      
-      @keyframes btn-anim2 {
-        0% {
-          top: -100%;
-        }
-        50%,100% {
-          top: 100%;
-        }
-      }
-      
-      .login-box a span:nth-child(3) {
-        bottom: 0;
-        right: -100%;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(270deg, transparent, #03e9f4);
-        animation: btn-anim3 1s linear infinite;
-        animation-delay: .5s
-      }
-      
-      @keyframes btn-anim3 {
-        0% {
-          right: -100%;
-        }
-        50%,100% {
-          right: 100%;
-        }
-      }
-      
-      .login-box a span:nth-child(4) {
-        bottom: -100%;
-        left: 0;
-        width: 2px;
-        height: 100%;
-        background: linear-gradient(360deg, transparent, #03e9f4);
-        animation: btn-anim4 1s linear infinite;
-        animation-delay: .75s
-      }
-      
-      @keyframes btn-anim4 {
-        0% {
-          bottom: -100%;
-        }
-        50%,100% {
-          bottom: 100%;
-        }
-      }
-      
-/* Styles for desktop */
-@media only screen and (min-width: 768px) {
-    body {
-        font-size: 18px;
-    }
-}
 
-/* Styles for tablets */
-@media only screen and (max-width: 767px) {
-    body {
-        font-size: 16px;
-    }
-}
+    <!--Font Awesome CDN-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-/* Styles for mobile devices */
-@media only screen and (max-width: 480px) {
-    body {
-        font-size: 14px;
-    }
-}
-      </style>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet Our Team</title>
+    <link rel="stylesheet" href="team.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/fav.png">
+   <link rel="icon" type="image/x-icon" href="assets/images/fav.png"></head>
+<body>
 
-</head>
-<body><?php include 'components/user_header.php'; ?>
-    <div class="login-box">
-        <h2>UPDATE PROFILE</h2>
-        <form>
-          <div class="user-box">
-            <input type="text" name="name" placeholder="<?= $fetch_profile['name']; ?>" class="box" maxlength="50">
+    <div class="wrapper">
+
       
-            <label>Name</label>
-          </div>
-          <div class="user-box">
-            <input type="email" name="email" placeholder="<?= $fetch_profile['email']; ?>" class="box" maxlength="50" oninput="this.value = this.value.replace(/\s/g, '')">
-      
-            <label>e-Mail</label>
-          </div>
 
-          <div class="user-box">
-            <input type="password" name="old_pass" class="box" maxlength="50" oninput="this.value = this.value.replace(/\s/g, '')">
-      
-            <label>Old Password</label>
-          </div>
+        <div class="card_Container">
 
-          <div class="user-box">
-            <input type="password" name="new_pass" class="box" maxlength="50" oninput="this.value = this.value.replace(/\s/g, '')">
-     
-       
-            <label>New Password</label>
-          </div>
+            <div class="card">
 
-          <div class="user-box">
-            <input type="password" name="confirm_pas"  class="box" maxlength="50" oninput="this.value = this.value.replace(/\s/g, '')">
-      
-            <label>Confirm New Password</label>
-          </div>
-          <a href="#">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <input type="submit" style=" text-transform: uppercase; font-family: sans-serif; font-size: 20px;border: none; background-color: transparent; color: #03e9f4;" name="SUMBIT" class="btn" >
-          </a>
-        </form>
-      </div>
+                <div class="imbBx">
+                    <img src="image/1.png" alt="">
+                </div>
+                
+
+                <div class="content">
+                    <div class="contentBx">
+                        <h3>Harsh Rajput <br><span>Founder & CEO</span></h3>
+                    </div>
+                    <ul class="sci">
+                        <li style="--i: 1">
+                            <a href="https://www.linkedin.com/in/harshrajput-/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                        </li>
+                        <li style="--i: 2">
+                              <a href="https://www.facebook.com/profile.php?id=100078757353066&mibextid=ZbWKwL" target="_blank"><i class="fa-brands fa-facebook-f"></i><a>
+                        </li>
+                        <li style="--i: 3">
+                            <a href="mailto:harshrajput96525@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="imbBx">
+                    <img src="image/2.png" alt="">
+                </div>
+
+                <div class="content">
+                    <div class="contentBx">
+                        <h3>Shreyas B Chandra<br><span>Co-Founder & COO</span></h3>
+                    </div>
+                    <ul class="sci">
+                        <li style="--i: 1">
+                            <a href=" https://www.linkedin.com/in/shreyas-b-chandra-32a786237/"target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                        </li>
+                        <li style="--i: 2">
+                            <a href="https://instagram.com/shreyas_b.chandra" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        </li>
+                        <li style="--i: 3">
+                            <a href="mailto:sbcinnovationofficial@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                        </li>
+                    </ul>
+                   
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="imbBx">
+                    <img src="image/3.png" alt="">
+                </div>
+
+                <div class="content">
+                    <div class="contentBx">
+                        <h3>Aadil Naushad Khan<br><span>CTO & VP</span></h3>
+                    </div>
+                    <ul class="sci">
+                        <li style="--i: 1">
+                            <a href="https://g.dev/hackingverse" target="_blank"><i class="fa-brands fa-google"></i></a>
+                        </li>
+                        <li style="--i: 2">
+                            <a href="https://instagram.com/hacking_verse" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        </li>
+                        <li style="--i: 3">
+                            <a href="mailto:aadilnaushadk@gmail.com" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                
+
+            </div>
+
+            <div class="card">
+
+                <div class="imbBx">
+                    <img src="image/4.png" alt="">
+                </div>
+
+                <div class="content">
+                    <div class="contentBx">
+                        <h3>Shivan Durgesh<br><span>Social Media Manager</span></h3>
+                    </div>
+                    <ul class="sci">
+                        <li style="--i: 1">
+                            <a href="https://www.linkedin.com/in/shivam-durgesh-177146265/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                        </li>
+                        <li style="--i: 2">
+                            <a href="https://www.instagram.com/shivam_durgesh20/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        </li>
+                        
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="card">
+
+                <div class="imbBx">
+                    <img src="image/5.png" alt="">
+                </div>
+
+                <div class="content">
+                    <div class="contentBx">
+                        <h3>Sarthak Bishnoi<br><span>Marketting Head</span></h3>
+                    </div>
+                    <ul class="sci">
+                        <li style="--i: 1">
+                            <a href="https://www.linkedin.com/in/ft-sarthak-bishnoi/" target="_blank"><i class="fa-brands fa-linkedin-in"></i></a>
+                        </li>
+                        <li style="--i: 2">
+                            <a href="https://www.instagram.com/sarthakbishnoi07/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        </li>
+                        
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </body>
 </html>
