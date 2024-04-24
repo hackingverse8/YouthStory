@@ -94,6 +94,87 @@ section {
   border-radius: 10px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.button-64 {
+  align-items: center;
+  background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  display: flex;
+  font-family: Phantomsans, sans-serif;
+  font-size: 20px;
+  justify-content: center;
+  line-height: 1em;
+  max-width: 100%;
+  min-width: 140px;
+  padding: 3px;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.button-64:active,
+.button-64:hover {
+  outline: 0;
+}
+
+.button-64 span {
+  background-color: rgb(5, 6, 45);
+  padding: 16px 24px;
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  transition: 300ms;
+}
+
+.button-64:hover span {
+  background: none;
+}
+
+@media (min-width: 768px) {
+  .button-64 {
+    font-size: 24px;
+    min-width: 196px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .swiper-slide span {
   position: absolute;
   top: 0;
@@ -123,52 +204,52 @@ section {
 }
 
 .swiper-slide:nth-child(1n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url(Ayush/1.png)
+  background: url(Ayush/1.png)
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(2n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/2.png")
+  background: url("Ayush/2.png")
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(3n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/3.png")
+  background: url("Ayush/3.png")
       no-repeat 50% 0% / cover;
 }
 
 .swiper-slide:nth-child(4n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/1.png")
+  background:  url("Ayush/1.png")
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(5n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/2.png")
+  background: url("Ayush/2.png")
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(6n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/3.png")
+  background:  url("Ayush/3.png")
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(7n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/4.png")
+  background:  url("Ayush/4.png")
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(8n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url(Ayush/5.png)
+  background:  url(Ayush/5.png)
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(9n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/6.png")
+  background: url("Ayush/6.png")
       no-repeat 50% 50% / cover;
 }
 
 .swiper-slide:nth-child(10n) {
-  background: linear-gradient(to top, #0f2027, #203a4300, #2c536400), url("Ayush/7.png")
+  background:  url("Ayush/7.png")
       no-repeat 50% 0% / cover;
 }
 
