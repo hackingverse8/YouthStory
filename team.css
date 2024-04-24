@@ -13,6 +13,7 @@ body{
     align-items: center;
     min-height: 100vh;
     background: url(background.png);
+   
 }
 
 .wrapper .title{
@@ -149,6 +150,7 @@ body{
     align-items: center;
     min-height: 100vh;
     background: url(background.png);
+
 }
 
 .wrapper .title{
@@ -182,8 +184,8 @@ body{
 
 .card_Container .card{
     position: relative;
-    width: 300px;
-    height: 360px;
+    width: 280px;
+    height: 330px;
     margin: 20px;
     overflow: hidden;
     box-shadow: 0 30px 30px -20px rgba(0, 0, 0, 1),
