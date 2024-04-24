@@ -133,6 +133,7 @@ section {
   white-space: nowrap;
   cursor: pointer;
   z-index: 999;
+  margin-left: 35%;
 }
 
 .button-64:active,
