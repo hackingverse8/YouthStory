@@ -84,8 +84,8 @@
     </div>
        
     </div>
-  </div>
-
+  </div> <br><br> <br> <br> <br>
+  <button class="button-64" id="shareButton" role="button"><span class="text">Share Story</span></button>
 </div>
   
   <ul class="circles">
@@ -103,6 +103,29 @@
 </section>
 <!-- partial -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js'></script><script  src="./script.js"></script>
-
+  <script>
+    // Get the share button element
+    const shareButton = document.getElementById('shareButton');
+    
+    // Attach an event listener to the share button
+    shareButton.addEventListener('click', function() {
+        // Check if the Web Share API is supported
+        if (navigator.share) {
+            // Define the data to be shared
+            const shareData = {
+                title: 'Youth Story',
+                text: 'Watch full carousel @Youth Story',
+                url: window.location.href  // Use the current page URL
+            };
+            
+            // Use the Web Share API to share the data
+            navigator.share(shareData)
+                .then(() => console.log('Content shared successfully!'))
+                .catch((error) => console.error('Error sharing content:', error));
+        } else {
+            console.log('Web Share API not supported in this browser.');
+        }
+    });
+</script>
 </body>
 </html>
